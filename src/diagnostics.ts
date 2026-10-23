@@ -9,6 +9,9 @@ export function log(level: 'error' | 'info', msg: string): void {
 /** Default period for `--diagnostics` health summaries. */
 const DIAGNOSTICS_INTERVAL_MS = 60_000;
 
+/** Node turns delays above this signed 32-bit limit into a 1 ms timer. */
+const MAX_INTERVAL_MS = 2_147_483_647;
+
 /**
  * Opt-in, local-only health diagnostics (#102). Writes one JSON line per
  * period to stderr — never stdout, which carries the event stream — with the
@@ -27,7 +30,9 @@ export function startDiagnostics(
 ): () => void {
   if (!flag) return () => {};
   const seconds = flag === 'true' ? NaN : Number(flag);
-  const intervalMs = Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : DIAGNOSTICS_INTERVAL_MS;
+  const intervalMs = Number.isFinite(seconds) && seconds > 0
+    ? Math.min(seconds * 1000, MAX_INTERVAL_MS)
+    : DIAGNOSTICS_INTERVAL_MS;
   const startedAt = Date.now();
   const report = (final: boolean): void => {
     try {

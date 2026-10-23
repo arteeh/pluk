@@ -153,6 +153,8 @@ plus a final one on exit, to **stderr** — stdout stays pure event JSONL:
 
 Only fixed counter categories are reported — never the session name, raw
 terminal output or any other user-provided value — and nothing is sent off-box.
+Intervals above 2147483.647 seconds (about 24.9 days) are capped at that value
+to stay within Node's timer limit.
 The same counters are available programmatically via `watch(...).stats()` and
 `Subscriber#stats()`.
 

@@ -1,0 +1,1 @@
+- Cap very large `--diagnostics` intervals at Node's maximum timer delay (2147483.647 seconds) so `watch` and `subscribe` do not overflow into a 1 ms reporting loop (#344).
