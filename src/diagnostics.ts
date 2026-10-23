@@ -21,6 +21,11 @@ const MAX_INTERVAL_MS = 2_147_483_647;
  * no session name, raw output or other user-provided value is included,
  * and nothing is sent anywhere. Returns a function that writes a final
  * summary and stops the timer.
+ *
+ * `flag` is the raw `--diagnostics` value. The CLI validates it before
+ * calling (exit 2 on anything that is not a positive, in-range number);
+ * library callers that pass a non-finite or non-positive value get the
+ * 60 s default instead.
  */
 export function startDiagnostics(
   command: 'watch' | 'subscribe',
