@@ -105,7 +105,7 @@ for (const [flag, expectedMs] of [
   ['2147484', 2_147_483_647],
   ['1e308', 2_147_483_647], // Finite seconds can overflow when converted to milliseconds.
 ]) {
-  test(`diagnostics timer uses a safe delay for --diagnostics=${flag}`, t => {
+  test(`startDiagnostics uses a safe delay for period ${flag}`, t => {
     const interval = t.mock.method(globalThis, 'setInterval');
     const lines = [];
     const stop = startDiagnostics('watch', () => ({ linesSeen: 0 }), flag, l => lines.push(l));
@@ -117,7 +117,7 @@ for (const [flag, expectedMs] of [
     } finally {
       stop();
     }
-    stop();
+    stop(); // idempotent
     assert.equal(lines.length, 1, 'stopping emits exactly one final summary');
     assert.equal(JSON.parse(lines[0]).final, true);
   });

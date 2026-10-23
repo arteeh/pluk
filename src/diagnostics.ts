@@ -10,7 +10,7 @@ export function log(level: 'error' | 'info', msg: string): void {
 const DIAGNOSTICS_INTERVAL_MS = 60_000;
 
 /** Node turns delays above this signed 32-bit limit into a 1 ms timer. */
-const MAX_INTERVAL_MS = 2_147_483_647;
+export const MAX_INTERVAL_MS = 2 ** 31 - 1;
 
 /**
  * Opt-in, local-only health diagnostics (#102). Writes one JSON line per
@@ -25,7 +25,8 @@ const MAX_INTERVAL_MS = 2_147_483_647;
  * `flag` is the raw `--diagnostics` value. The CLI validates it before
  * calling (exit 2 on anything that is not a positive, in-range number);
  * library callers that pass a non-finite or non-positive value get the
- * 60 s default instead.
+ * 60 s default instead. Finite positive periods above Node's timer limit
+ * are capped at MAX_INTERVAL_MS.
  */
 export function startDiagnostics(
   command: 'watch' | 'subscribe',
